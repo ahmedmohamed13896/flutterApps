@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:page_view_indicator/page_view_indicator.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../page_model.dart';
+import 'home_page.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -138,7 +139,15 @@ class _WelcomePageState extends State<WelcomePage> {
                     letterSpacing: 1,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      _updateSeen();
+                      return HomePage();
+                    }),
+                  );
+                },
               ),
             ),
           ),
@@ -166,5 +175,10 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
       ),
     );
+  }
+
+  void _updateSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('seen', true);
   }
 }
