@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/page_model.dart';
+import 'package:page_view_indicator/page_view_indicator.dart';
+
+import '../page_model.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -7,13 +9,9 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  List<String> images = [
-    "assets/images/bg.jpg",
-    "assets/images/bg2.jpg",
-    "assets/images/bg3.jpg",
-    "assets/images/bg4.jpg"
-  ];
   List<PageModel> pages = List<PageModel>();
+
+  ValueNotifier<int> _pageViewNotifier = ValueNotifier(0);
 
   void _addPage() {
     pages.add(
@@ -106,6 +104,16 @@ class _WelcomePageState extends State<WelcomePage> {
               );
             },
             itemCount: pages.length,
+            onPageChanged: (index) {
+              _pageViewNotifier.value = index;
+            },
+          ),
+        ),
+        Transform.translate(
+          offset: Offset(0, 175),
+          child: Align(
+            alignment: Alignment.center,
+            child: _displayPageIndicators(pages.length),
           ),
         ),
         Align(
@@ -136,6 +144,27 @@ class _WelcomePageState extends State<WelcomePage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _displayPageIndicators(int length) {
+    return PageViewIndicator(
+      pageIndexNotifier: _pageViewNotifier,
+      length: length,
+      normalBuilder: (animationController, index) => Circle(
+        size: 9.0,
+        color: Colors.grey.shade100,
+      ),
+      highlightedBuilder: (animationController, index) => ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animationController,
+          curve: Curves.ease,
+        ),
+        child: Circle(
+          size: 9.0,
+          color: Colors.red,
+        ),
+      ),
     );
   }
 }
